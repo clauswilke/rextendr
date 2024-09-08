@@ -1,12 +1,13 @@
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [main, master]
   pull_request:
-    branches:
-      - main
-      - master
+    branches: [main, master]
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
 
 name: Test package generation
 
@@ -47,8 +48,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           rtools-version: ${{ matrix.config.rtools-version }}
-          # TODO: enable RSPM when all the packages are available
-          use-public-rspm: false
+          use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

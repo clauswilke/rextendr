@@ -4,7 +4,7 @@
       use_extendr()
     Message
       i First time using rextendr. Upgrading automatically...
-      i Setting `Config/rextendr/version` to "0.3.1.9000" in the 'DESCRIPTION' file.
+      i Setting `Config/rextendr/version` to "0.3.1.9001" in the 'DESCRIPTION' file.
       i Setting `SystemRequirements` to "Cargo (Rust's package manager), rustc" in the 'DESCRIPTION' file.
       v Creating 'src/rust/src'.
       v Writing 'src/entrypoint.c'
@@ -72,7 +72,7 @@
       	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
       
       clean:
-      	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rust/target
+      	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR)
 
 ---
 
@@ -284,5 +284,5 @@
       	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
       
       clean:
-      	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rust/target
+      	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR)
 

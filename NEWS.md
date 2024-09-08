@@ -12,6 +12,10 @@
 * `create_extendr_package()` allows user to create project directory using RStudio's **Project Command**. (#321)
 * Support `RTOOLS44` (#347)
 * Removed `use_try_from` as an option in `rust_function`, and added `use_rng` (#354)
+* Added `use_crate()` function to make adding dependencies to Cargo.toml easier within R, similar to `usethis::use_package()` (#361)
+* Fixed an issue in `rust_source()` family of functions that prevented usage of `r#` escape sequences in Rust function names (#374)
+* `use_cran_defaults()` now checks the `SystemRequirements` field in the `DESCRIPTION` file for cargo and rustc. It will display installation instructions if either is missing or provide the minimum required version if the installed version is outdated.
+* Added `use_msrv()` to aid in specifying the minimum supported rust version (MSRV) for an R package
 
 # rextend 0.3.1
 
