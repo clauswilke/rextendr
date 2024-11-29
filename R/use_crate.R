@@ -10,13 +10,15 @@
 #' @param optional boolean scalar, whether to mark the dependency as optional
 #' (FALSE by default)
 #' @param path character scalar, the package directory
+#' @param echo logical scalar, should cargo command and outputs be printed to
+#' console (default is TRUE)
 #'
 #' @details
 #' For more details regarding these and other options, see the
 #' \href{https://doc.rust-lang.org/cargo/commands/cargo-add.html}{Cargo docs}
 #' for `cargo-add`.
 #'
-#' @return `NULL`, invisibly
+#' @return `NULL` (invisibly)
 #'
 #' @export
 #'
@@ -43,52 +45,61 @@ use_crate <- function(
     git = NULL,
     version = NULL,
     optional = FALSE,
-    path = ".") {
-  # check args
-  check_string(crate)
-  check_character(features, allow_null = TRUE)
-  check_string(git, allow_null = TRUE)
-  check_string(version, allow_null = TRUE)
-  check_bool(optional)
-  check_string(path)
+    path = ".",
+    echo = TRUE) {
+  check_string(crate, class = "rextendr_error")
+  check_character(features, allow_null = TRUE, class = "rextendr_error")
+  check_string(git, allow_null = TRUE, class = "rextendr_error")
+  check_string(version, allow_null = TRUE, class = "rextendr_error")
+  check_bool(optional, class = "rextendr_error")
+  check_string(path, class = "rextendr_error")
+  check_bool(echo, class = "rextendr_error")
+
+  if (!is.null(version) && !is.null(git)) {
+    cli::cli_abort(
+      "Cannot specify a git URL ('{git}') with a version ('{version}').",
+      class = "rextendr_error"
+    )
+  }
 
   if (!is.null(version)) {
     crate <- paste0(crate, "@", version)
   }
 
-  # combine main options
-  cargo_add_opts <- list(
-    "--features" = paste0(features, collapse = " "),
-    "--git" = git,
-    "--optional" = tolower(as.character(optional))
-  )
+  if (!is.null(features)) {
+    features <- c(
+      "--features",
+      paste(crate, features, sep = "/", collapse = ",")
+    )
+  }
 
-  # clear empty options
-  cargo_add_opts <- purrr::discard(cargo_add_opts, rlang::is_empty)
+  if (!is.null(git)) {
+    git <- c("--git", git)
+  }
 
-  # combine option names and values into single strings
-  adtl_args <- unname(purrr::imap_chr(
-    cargo_add_opts,
-    function(x, i) {
-      paste(i, paste0(x, collapse = " "))
+  if (optional) {
+    optional <- "--optional"
+  } else {
+    optional <- NULL
+  }
+
+  args <- c(
+    "add",
+    crate,
+    features,
+    git,
+    optional,
+    if (tty_has_colors()) {
+      "--color=always"
+    } else {
+      "--color=never"
     }
-  ))
-
-  # get rust directory in project folder
-  root <- rprojroot::find_package_root_file(path = path)
-
-  rust_folder <- normalizePath(
-    file.path(root, "src", "rust"),
-    winslash = "/",
-    mustWork = FALSE
   )
 
-  # run the commmand
-  processx::run(
-    "cargo",
-    c("add", crate, adtl_args),
-    echo_cmd = TRUE,
-    wd = rust_folder
+  run_cargo(
+    args,
+    wd = find_extendr_crate(path = path),
+    echo = echo
   )
 
   invisible()

@@ -22,6 +22,7 @@ reference:
   - write_license_note
   - clean
   - cran
+  - vendor_pkgs
   - use_msrv
 
 - title: Various utility functions
@@ -29,3 +30,4 @@ reference:
   - to_toml
   - make_module_macro
   - rust_sitrep
+  - read_cargo_metadata

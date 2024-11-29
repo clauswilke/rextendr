@@ -1,7 +1,7 @@
 Package: rextendr
 Title: Call Rust Code from R using the 'extendr' Crate
 Version: 0.3.1.9001
-Authors@R: 
+Authors@R:
     c(person(given = "Claus O.",
              family = "Wilke",
              role = "aut",
@@ -48,7 +48,6 @@ Imports:
     jsonlite,
     pkgbuild (>= 1.4.0),
     processx,
-    purrr,
     rlang (>= 1.0.5),
     rprojroot,
     stringi,
@@ -57,10 +56,10 @@ Imports:
     withr
 Suggests:
     devtools,
+    rcmdcheck,
     knitr,
     lintr,
     rmarkdown,
-    rstudioapi,
     testthat (>= 3.1.7),
     usethis
 VignetteBuilder: 

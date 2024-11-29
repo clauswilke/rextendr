@@ -101,16 +101,16 @@ use_extendr <- function(path = ".",
   )
 
   use_rextendr_template(
-    "Makevars",
-    save_as = file.path("src", "Makevars"),
+    "Makevars.in",
+    save_as = file.path("src", "Makevars.in"),
     quiet = quiet,
     overwrite = overwrite,
     data = list(lib_name = lib_name)
   )
 
   use_rextendr_template(
-    "Makevars.win",
-    save_as = file.path("src", "Makevars.win"),
+    "Makevars.win.in",
+    save_as = file.path("src", "Makevars.win.in"),
     quiet = quiet,
     overwrite = overwrite,
     data = list(lib_name = lib_name)
@@ -130,8 +130,6 @@ use_extendr <- function(path = ".",
     quiet = quiet,
     overwrite = overwrite
   )
-
-  usethis::use_build_ignore("src/.cargo")
 
   edition <- match.arg(edition, several.ok = FALSE)
   cargo_toml_content <- to_toml(
@@ -171,6 +169,61 @@ use_extendr <- function(path = ".",
     overwrite = FALSE,
     data = list(pkg_name = pkg_name)
   )
+
+  # create tools directory if it does not exist
+  if (!dir.exists("tools")) {
+    dir.create("tools")
+  }
+
+  # add msrv.R template
+  use_rextendr_template(
+    "msrv.R",
+    save_as = file.path("tools", "msrv.R"),
+    quiet = quiet,
+    overwrite = overwrite
+  )
+
+  # add configure and configure.win templates
+  use_rextendr_template(
+    "configure",
+    save_as = "configure",
+    quiet = quiet,
+    overwrite = overwrite,
+    data = list(lib_name = lib_name)
+  )
+
+  use_rextendr_template(
+    "configure.win",
+    save_as = "configure.win",
+    quiet = quiet,
+    overwrite = overwrite,
+    data = list(lib_name = lib_name)
+  )
+
+  # configure needs to be made executable
+  # ignore for Windows
+  if (.Platform[["OS.type"]] == "unix") {
+    Sys.chmod("configure", "0755")
+  }
+
+  # the temporary cargo directory must be ignored
+  usethis::use_build_ignore("src/.cargo")
+
+  # ensure that the vendor directory is ignored
+  usethis::use_build_ignore(
+    file.path("src", "rust", "vendor")
+  )
+
+  usethis::use_git_ignore(
+    file.path("src", "rust", "vendor")
+  )
+
+  # the src/Makevars should be created each time the package
+  # is built. This is handled via the configure file
+  usethis::use_build_ignore("src/Makevars")
+  usethis::use_git_ignore("src/Makevars")
+  usethis::use_build_ignore("src/Makevars.win")
+  usethis::use_git_ignore("src/Makevars.win")
 
   if (!isTRUE(quiet)) {
     cli::cli_alert_success("Finished configuring {.pkg extendr} for package {.pkg {pkg_name}}.")

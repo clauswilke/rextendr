@@ -1,5 +1,10 @@
 # rextendr (development version)
 
+* `purrr` has been replaced with [`R/standalone-purrr.R`](https://github.com/r-lib/rlang/blob/main/R/standalone-purrr.R) removing `purrr` from `Imports` <https://github.com/extendr/rextendr/pull/408>
+* `document()` will no longer try to save all open files using rstudioapi <https://github.com/extendr/rextendr/issues/404> <https://github.com/extendr/rextendr/issues/407>
+* `use_cran_default()` has been removed as the default package template is CRAN compatible <https://github.com/extendr/rextendr/pull/394>
+* `use_extendr()` now creates `tools/msrv.R`, `configure` and `configure.win`. These have been moved out of `use_cran_defaults()` <https://github.com/extendr/rextendr/pull/393>
+* `Makevars` now prints linked static libraries at compile time by adding `--print=native-static-libs` to `RUSTFLAGS` <https://github.com/extendr/rextendr/pull/393>
 * `use_extendr()` sets the `DESCRIPTION`'s `SystemRequirements` field according to CRAN policy to `Cargo (Rust's package manager), rustc` (#329)
 * Introduces new functions `use_cran_defaults()` and `vendor_pkgs()` to ease the publication of extendr-powered packages on CRAN. See the new article _CRAN compliant extendr packages_ on how to use these (#320).
 * `rust_sitrep()` now better communicates the status of the Rust toolchain and available targets. It also guides the user through necessary installation steps to fix Rust setup (#318).
@@ -16,6 +21,8 @@
 * Fixed an issue in `rust_source()` family of functions that prevented usage of `r#` escape sequences in Rust function names (#374)
 * `use_cran_defaults()` now checks the `SystemRequirements` field in the `DESCRIPTION` file for cargo and rustc. It will display installation instructions if either is missing or provide the minimum required version if the installed version is outdated.
 * Added `use_msrv()` to aid in specifying the minimum supported rust version (MSRV) for an R package
+* Added `read_cargo_metadata()` to retrieve Cargo metadata for packages and
+  workspaces. (#389)
 
 # rextend 0.3.1
 
